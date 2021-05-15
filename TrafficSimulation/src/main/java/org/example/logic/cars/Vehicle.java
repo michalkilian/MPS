@@ -1,4 +1,4 @@
-package logic.cars;
+package org.example.logic.cars;
 
 import lombok.Data;
 

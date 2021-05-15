@@ -1,19 +1,13 @@
-package controller;
+package org.example.controller;
 
-import logic.Grid;
-import logic.Junction;
-import logic.Settings;
-import logic.Simulation;
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.stage.Stage;
+import org.example.logic.Settings;
+import org.example.logic.Simulation;
 
 import java.io.IOException;
 import java.net.URL;

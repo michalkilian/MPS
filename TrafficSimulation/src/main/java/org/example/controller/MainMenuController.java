@@ -1,6 +1,5 @@
-package controller;
+package org.example.controller;
 
-import logic.Settings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -8,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import org.example.logic.Settings;
 
 import java.io.IOException;
 import java.net.URL;

@@ -1,7 +1,8 @@
-package logic;
+package org.example.logic;
 
-import logic.cars.Type;
-import logic.cars.Vehicle;
+
+import org.example.logic.cars.Type;
+import org.example.logic.cars.Vehicle;
 
 import java.util.ArrayList;
 import java.util.List;

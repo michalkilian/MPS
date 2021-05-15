@@ -1,13 +1,12 @@
-package controller;
+package org.example.controller;
 
-import logic.Settings;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import javafx.event.ActionEvent;
+import org.example.logic.Settings;
 
 import java.io.IOException;
 

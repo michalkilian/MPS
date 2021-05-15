@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="768.0" prefWidth="1024.0" style="-fx-background-color: rgb(255,255,255);" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainMenuController">
+<AnchorPane prefHeight="768.0" prefWidth="1024.0" style="-fx-background-color: rgb(255,255,255);" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.controller.MainMenuController">
     <children>
         <Label alignment="CENTER" prefHeight="85.0" prefWidth="1080.0" text="Monte Carlo simulation of traffic" textAlignment="CENTER">
             <font>
@@ -16,9 +16,9 @@
         </Label>
         <Button fx:id="startButton" layoutX="493.0" layoutY="430.0" mnemonicParsing="false" onAction="#changeSceneToSimulation" prefHeight="57.0" prefWidth="94.0" text="Start" />
         <Button fx:id="settingsButton" layoutX="493.0" layoutY="523.0" mnemonicParsing="false" onAction="#changeSceneToSettings" prefHeight="57.0" prefWidth="94.0" text="Settings" />
-        <ImageView fitHeight="313.0" fitWidth="500.0" layoutX="298.0" layoutY="85.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@cross.png" />
-         </image></ImageView>
+        <!--        <ImageView fitHeight="313.0" fitWidth="500.0" layoutX="298.0" layoutY="85.0" pickOnBounds="true" preserveRatio="true">-->
+        <!--         <image>-->
+        <!--            <Image url="@cross.png" />-->
+        <!--         </image></ImageView>-->
     </children>
 </AnchorPane>

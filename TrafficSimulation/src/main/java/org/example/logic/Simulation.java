@@ -1,9 +1,4 @@
-package logic;
-
-import logic.Grid;
-import logic.Junction;
-import logic.cars.Vehicle;
-import logic.cars.Vehicle;
+package org.example.logic;
 
 import java.util.Random;
 
