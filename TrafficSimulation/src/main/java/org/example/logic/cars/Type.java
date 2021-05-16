@@ -4,10 +4,10 @@ import lombok.Getter;
 
 @Getter
 public enum Type {
-    NONE((byte)0), CAR((byte)1), TRUCK((byte) 2);
-    private final byte value;
+    CAR(1), TRUCK( 2);
+    private final int value;
 
-    Type(byte value) {
+    Type(int value) {
         this.value = value;
     }
 

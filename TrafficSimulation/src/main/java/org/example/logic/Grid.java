@@ -4,19 +4,19 @@ public class Grid {
 
     int widthInCells;
     int lengthInCells;
-    byte[][] left;
-    byte[][] middle;
-    byte[][] right;
+    int[][] left;
+    int[][] middle;
+    int[][] right;
 
     public Grid(int widthInCells, int lengthInCells) {
         this.lengthInCells = lengthInCells;
         this.widthInCells = widthInCells;
-        left = new byte[lengthInCells][widthInCells];
-        middle = new byte[widthInCells][2 * lengthInCells + widthInCells];
-        right = new byte[lengthInCells][widthInCells];
+        left = new int[lengthInCells][widthInCells];
+        middle = new int[widthInCells][2 * lengthInCells + widthInCells];
+        right = new int[lengthInCells][widthInCells];
     }
 
-    public void set(int x, int y, byte val) {
+    public void set(int x, int y, int val) {
         if (x >= 0 && x < lengthInCells && y >= lengthInCells && y < lengthInCells + widthInCells)
             left[y][lengthInCells - x] = val;
         else if (x >= lengthInCells && x < lengthInCells + widthInCells && y >= 0 && y < 2 * lengthInCells + widthInCells)
@@ -27,7 +27,7 @@ public class Grid {
             throw new IndexOutOfBoundsException();
     }
 
-    public byte get(int x, int y) {
+    public int get(int x, int y) {
         if (x >= 0 && x < lengthInCells && y >= lengthInCells && y < lengthInCells + widthInCells)
             return left[x][y - lengthInCells];
         else if (x >= lengthInCells && x < lengthInCells + widthInCells && y >= 0 && y < 2 * lengthInCells + widthInCells)
