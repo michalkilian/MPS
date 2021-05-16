@@ -14,6 +14,7 @@ public class Junction {
 
     public Grid grid;
     List<Vehicle> vehicles = new ArrayList<>();
+    List<TrafficLight> lights = new ArrayList<>();
 
     public Junction(int roadWidthCm, int roadLengthCm, int squareSizeCm) {
         if (roadWidthCm % squareSizeCm != 0 || roadLengthCm % squareSizeCm != 0) throw new IllegalArgumentException();
@@ -23,6 +24,22 @@ public class Junction {
         this.squareSizeCm = squareSizeCm;
 
         grid = new Grid(roadWidthCm / squareSizeCm, roadLengthCm / squareSizeCm);
+        this.lights.add(new TrafficLight(
+                roadLengthCm, 0,
+                roadLengthCm + roadWidthCm / 2, roadLengthCm,
+                10, 10, 10, 10, Light.GREEN));
+        this.lights.add(new TrafficLight(
+                roadLengthCm + roadWidthCm, roadLengthCm,
+                2 * roadLengthCm + roadWidthCm, roadLengthCm + roadWidthCm / 2,
+                10, 10, 10, 10, Light.RED));
+        this.lights.add(new TrafficLight(
+                roadLengthCm + roadWidthCm / 2, roadLengthCm + roadWidthCm,
+                roadLengthCm + roadWidthCm, 2*roadLengthCm + roadWidthCm,
+                10, 10, 10, 10, Light.GREEN));
+        this.lights.add(new TrafficLight(
+                0, roadLengthCm + roadWidthCm / 2,
+                roadLengthCm, roadLengthCm + roadWidthCm,
+                10, 10, 10, 10, Light.RED));
     }
 
     public void moveVehicle(Vehicle vehicle, int x, int y) {

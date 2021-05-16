@@ -9,7 +9,7 @@ import org.example.logic.Junction;
 
 public class Main extends Application {
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("MainMenu.fxml"));
         primaryStage.setTitle("MPS Projekt");
         Scene scene = new Scene(root);
@@ -19,9 +19,8 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        launch(args);
+//        launch(args);
         Junction junction = new Junction(180, 210, 30);
         junction.grid.printGrid();
-
     }
 }
