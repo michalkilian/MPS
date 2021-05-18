@@ -10,6 +10,10 @@ public class Settings {
     public static int carMaxVelocity;
     //public static int[] throughput = {10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10};
 
+    public static int minimalInterCarDistance = 30;
+    public static int carSize = 450;
+
+
     public Settings() {
         time = 2;
         carMaxVelocity = 3;

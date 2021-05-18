@@ -1,12 +1,10 @@
 package org.example.logic;
 
 
+import org.example.logic.cars.Direction;
+
 public class TrafficLight {
-    // Area of influence (x1,y1) (x2,y2)
-    int x1;
-    int y1;
-    int x2;
-    int y2;
+    Direction forDirection;
     int timeSinceChange = 0;
     int greenTime;
     int yellowTime;
@@ -14,11 +12,8 @@ public class TrafficLight {
     int redYellowTime;
     Light state;
 
-    public TrafficLight(int x1, int y1, int x2, int y2, int greenTime, int yellowTime, int redTime, int redYellowTime, Light state) {
-        this.x1 = x1;
-        this.y1 = y1;
-        this.x2 = x2;
-        this.y2 = y2;
+    public TrafficLight(Direction forDirection, int greenTime, int yellowTime, int redTime, int redYellowTime, Light state) {
+        this.forDirection = forDirection;
         this.greenTime = greenTime;
         this.yellowTime = yellowTime;
         this.redTime = redTime;
@@ -40,5 +35,6 @@ public class TrafficLight {
             state = Light.GREEN;
             timeSinceChange = 0;
         }
+        timeSinceChange++;
     }
 }
