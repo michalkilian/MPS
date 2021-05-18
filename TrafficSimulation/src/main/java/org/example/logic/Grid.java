@@ -18,11 +18,14 @@ public class Grid {
 
     public void set(int x, int y, int val) {
         if (x >= 0 && x < lengthInCells && y >= lengthInCells && y < lengthInCells + widthInCells)
-            left[y][lengthInCells - x] = val;
+//            left[y][lengthInCells - x] = val;
+            left[x][y - lengthInCells] = val;
         else if (x >= lengthInCells && x < lengthInCells + widthInCells && y >= 0 && y < 2 * lengthInCells + widthInCells)
-            middle[lengthInCells - y][x] = val;
+//            middle[lengthInCells - y][x] = val;
+            middle[x - lengthInCells][y] = val;
         else if (x >= lengthInCells + widthInCells && x < 2 * lengthInCells + widthInCells && y >= lengthInCells && y < lengthInCells + widthInCells)
-            right[lengthInCells + widthInCells - y][lengthInCells - x] = val;
+//            right[lengthInCells + widthInCells - y][lengthInCells - x] = val;
+            right[x - lengthInCells - widthInCells][y - lengthInCells] = val;
         else
             throw new IndexOutOfBoundsException();
     }
@@ -38,16 +41,19 @@ public class Grid {
             throw new IndexOutOfBoundsException();
     }
 
-    public void printGrid() {
+    public String toString() {
+        StringBuilder str = new StringBuilder();
         for (int i = 0; i < 2 * lengthInCells + widthInCells; i++) {
             for (int j = 0; j < 2 * lengthInCells + widthInCells; j++) {
                 try {
-                    if (this.get(j, i) == 0) System.out.print(0);
+                    if(this.get(j,i) == 0) str.append('-');
+                    else str.append(this.get(j, i));
                 } catch (IndexOutOfBoundsException e) {
-                    System.out.print('x');
+                    str.append('x');
                 }
             }
-            System.out.println();
+            str.append('\n');
         }
+        return str.toString();
     }
 }
