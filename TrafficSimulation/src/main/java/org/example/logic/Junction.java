@@ -6,35 +6,37 @@ import lombok.Getter;
 import org.example.logic.cars.Direction;
 import org.example.logic.cars.Vehicle;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Getter
 public class Junction {
-    int roadWidthCm;
-    int roadLengthCm;
+    int roadWidth;
+    int roadLength;
     int squareSizeCm;
     int simulationTime;
 
     public Grid grid;
     Map<Pair<Integer, Integer>, Vehicle> vehicles = new HashMap<>();
-    List<TrafficLight> lights = new ArrayList<>();
+    TrafficLight lightsWest;
+    TrafficLight lightsNorth;
+    TrafficLight lightsSouth;
+    TrafficLight lightsEast;
+
 
     public Junction(int roadWidthCm, int roadLengthCm, int squareSizeCm) {
         if (roadWidthCm % squareSizeCm != 0 || roadLengthCm % squareSizeCm != 0)
             throw new IllegalArgumentException("Wrong size of roadWidthCm or roadLengthCm");
 
-        this.roadWidthCm = roadWidthCm;
-        this.roadLengthCm = roadLengthCm;
+        this.roadWidth = roadWidthCm / squareSizeCm;
+        this.roadLength = roadLengthCm / squareSizeCm;
         this.squareSizeCm = squareSizeCm;
 
         grid = new Grid(roadWidthCm / squareSizeCm, roadLengthCm / squareSizeCm);
-        this.lights.add(new TrafficLight(Direction.WEST, 10, 10, 10, 10, Light.GREEN));
-        this.lights.add(new TrafficLight(Direction.NORTH, 10, 10, 10, 10, Light.RED));
-        this.lights.add(new TrafficLight(Direction.EAST, 10, 10, 10, 10, Light.GREEN));
-        this.lights.add(new TrafficLight(Direction.SOUTH, 10, 10, 10, 10, Light.RED));
+        lightsWest = new TrafficLight(Direction.WEST, 1, 1, 5, 1, Light.RED);
+        lightsNorth = new TrafficLight(Direction.NORTH, 1, 1, 5, 1, Light.GREEN);
+        lightsSouth = new TrafficLight(Direction.SOUTH, 1, 1, 5, 1, Light.RED);
+        lightsEast = new TrafficLight(Direction.EAST, 1, 1, 5, 1, Light.GREEN);
     }
 
     public void moveVehicle(Vehicle v, int x, int y) {
@@ -43,8 +45,7 @@ public class Junction {
             grid.set(x, y, v.getType().getValue());
             v.setX(x);
             v.setY(y);
-        } catch (IndexOutOfBoundsException e)
-        {
+        } catch (IndexOutOfBoundsException e) {
             vehicles.remove(new Pair<>(v.getX(), v.getY()));
         }
     }
@@ -56,24 +57,32 @@ public class Junction {
 
     public void tick() {
         simulationTime++;
-        for (TrafficLight l : lights) {
-            l.tick();
-        }
 
         for (Vehicle v : vehicles.values()) {
             int x = v.getX();
             int y = v.getY();
             if (v.getFrom() == Direction.WEST) {
-                x+=v.getSpeed();
+                if (v.getX() > roadLength - 2 && v.getX() < roadLength && lightsWest.getState() != Light.GREEN) ;
+                else x += v.getSpeed();
             } else if (v.getFrom() == Direction.NORTH) {
-                y+=v.getSpeed();
+                if (v.getY() > roadLength - 2 && v.getY() < roadLength && lightsNorth.getState() != Light.GREEN) ;
+                else y += v.getSpeed();
             } else if (v.getFrom() == Direction.EAST) {
-                x-=v.getSpeed();
+                if (v.getX() < roadLength + roadWidth + 2 && v.getX() > roadLength + roadWidth && lightsEast.getState() != Light.GREEN)
+                    ;
+                else x -= v.getSpeed();
             } else if (v.getFrom() == Direction.SOUTH) {
-                y-=v.getSpeed();
+                if (v.getY() < roadLength + roadWidth + 2 && v.getY() > roadLength + roadWidth && lightsSouth.getState() != Light.GREEN)
+                    ;
+                else y -= v.getSpeed();
             }
             moveVehicle(v, x, y);
         }
+
+        lightsEast.tick();
+        lightsNorth.tick();
+        lightsWest.tick();
+        lightsSouth.tick();
 
 //        // Legacy code - will be used probably later
 //        int carSizeSquares = (Settings.carSize / squareSizeCm);
@@ -119,5 +128,10 @@ public class Junction {
 //                    System.out.println("Car can move forward");
 //            }
 //        }
+
+    }
+
+    public String lightsState() {
+        return String.valueOf(lightsWest) + lightsNorth + lightsEast + lightsSouth;
     }
 }

@@ -10,9 +10,9 @@ import org.example.logic.cars.Direction;
 import org.example.logic.cars.Type;
 import org.example.logic.cars.Vehicle;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 public class Main extends Application {
     @Override
@@ -32,18 +32,20 @@ public class Main extends Application {
         int squareSizeCm = 30;
 
         Junction junction = new Junction(roadWidthCm, roadLengthCm, squareSizeCm);
-        junction.placeVehicle(new Vehicle( 2,  roadLengthCm/squareSizeCm + 3, Direction.WEST, Type.CAR, 2));
+        junction.placeVehicle(new Vehicle( 2,  roadLengthCm/squareSizeCm + 2, Direction.WEST, Type.CAR, 1));
 
-        for(int i=0; i<10; i++)
+        for(int i=0; i<15; i++)
         {
             try {
-                PrintWriter p = new PrintWriter( "vis-"+junction.getSimulationTime()+".txt","UTF-8");
+                PrintWriter p = new PrintWriter( "gridVisualizations/vis-"+junction.getSimulationTime()+".txt", StandardCharsets.UTF_8);
                 p.println(junction.getSimulationTime());
+                p.println("---");
+                p.print(junction.lightsState());
                 p.println("---");
                 p.println(junction.grid.toString());
                 p.close();
                 junction.tick();
-            } catch (FileNotFoundException | UnsupportedEncodingException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }

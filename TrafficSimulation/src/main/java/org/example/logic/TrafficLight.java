@@ -1,8 +1,10 @@
 package org.example.logic;
 
 
+import lombok.Getter;
 import org.example.logic.cars.Direction;
 
+@Getter
 public class TrafficLight {
     Direction forDirection;
     int timeSinceChange = 0;
@@ -36,5 +38,9 @@ public class TrafficLight {
             timeSinceChange = 0;
         }
         timeSinceChange++;
+    }
+
+    public String toString() {
+        return this.forDirection + ":" + this.state + "\n";
     }
 }
