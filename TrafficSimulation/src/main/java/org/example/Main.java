@@ -27,14 +27,15 @@ public class Main extends Application {
 
     public static void main(String[] args) {
 //        launch(args);
-        int roadWidthCm = 180;
-        int roadLengthCm = 210;
         int squareSizeCm = 30;
+        int roadWidthCm = 6*squareSizeCm;
+        int roadLengthCm = 8*squareSizeCm;
 
         Junction junction = new Junction(roadWidthCm, roadLengthCm, squareSizeCm);
-        junction.placeVehicle(new Vehicle( 2,  roadLengthCm/squareSizeCm + 2, Direction.WEST, Type.CAR, 1));
+        junction.placeVehicle(new Vehicle( 0,  roadLengthCm/squareSizeCm + 2, Direction.WEST, Type.CAR, 2));
+        junction.placeVehicle(new Vehicle(5,roadLengthCm/squareSizeCm + 2, Direction.WEST, Type.CAR, 1));
 
-        for(int i=0; i<15; i++)
+        for(int i=0; i<20; i++)
         {
             try {
                 PrintWriter p = new PrintWriter( "gridVisualizations/vis-"+junction.getSimulationTime()+".txt", StandardCharsets.UTF_8);
