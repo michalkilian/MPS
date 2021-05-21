@@ -1,7 +1,6 @@
 package org.example.logic.cars;
 
 import lombok.Data;
-import org.example.logic.Settings;
 
 @Data
 public class Vehicle {
@@ -22,8 +21,8 @@ public class Vehicle {
         this.speed = speed;
     }
 
-    public void accelerate(double acceleration) {
-        if (this.speed + acceleration > Settings.carMaxSpeed) this.speed = Settings.carMaxSpeed;
+    public void accelerate(double acceleration, int carMaxSpeed) {
+        if (this.speed + acceleration > carMaxSpeed) this.speed = carMaxSpeed;
         else if ( (int) (this.speed + acceleration) <= 0) this.speed = 1;
         else this.speed += acceleration;
     }

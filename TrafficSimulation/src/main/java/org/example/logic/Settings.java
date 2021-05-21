@@ -8,24 +8,30 @@ public class Settings {
     private int time;
     //public static int[] throughput = {10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10};
 
-    // Vehicles' settings
-    public static int minimalInterCarDistance = 2;
+    // Junction's
+    public int squareSizeCm;
+    public int roadWidthCm;
+    public int roadLengthCm;
+    // Vehicles'
+    public int minimalInterCarDistance;
     //Cars'
+    // Marcin's
+    public int carMaxSpeed;
+    public int carAcceleration;
+    public int carSizeCm;
+    // Michal's
     public static int carMaxVelocity = 3;
-    public static int carMaxSpeed = 2;
-    public static int carAcceleration = 1;
     public static int carMaxUpperVelocity = 2;
-    public static int carSize = 30;//450; // carSize/squareSize = 2k + 1, k in N
 
-
-    public Settings() {
-//        time = 2;
-//        // Vehicles'
-//        minimalInterCarDistance = 30;
-//        // Cars'
-//        carMaxVelocity = 3;
-//        carMaxUpperVelocity = 5;
-//        carSize = 450;
+    public Settings() {}
+    public Settings(int squareSizeCm, int roadWidthCm, int roadLengthCm, int minimalInterCarDistance, int carMaxSpeed, int carAcceleration, int carSizeCm) {
+        this.squareSizeCm = squareSizeCm;
+        this.roadWidthCm = roadWidthCm;
+        this.roadLengthCm = roadLengthCm;
+        this.minimalInterCarDistance = minimalInterCarDistance;
+        this.carMaxSpeed = carMaxSpeed;
+        this.carAcceleration = carAcceleration;
+        this.carSizeCm = carSizeCm;
     }
 
     public int getTime() {

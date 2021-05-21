@@ -13,7 +13,7 @@ import java.util.Map;
 public class Junction {
     int roadWidth;
     int roadLength;
-    int squareSizeCm;
+    Settings settings;
     int simulationTime;
 
     public Grid grid;
@@ -24,13 +24,16 @@ public class Junction {
     TrafficLight lightsEast;
 
 
-    public Junction(int roadWidthCm, int roadLengthCm, int squareSizeCm) {
+    public Junction(Settings settings) {
+        this.settings = settings;
+        int squareSizeCm = settings.squareSizeCm;
+        int roadWidthCm = settings.roadWidthCm;
+        int roadLengthCm = settings.roadLengthCm;
         if (roadWidthCm % squareSizeCm != 0 || roadLengthCm % squareSizeCm != 0)
             throw new IllegalArgumentException("Wrong size of roadWidthCm or roadLengthCm");
 
         this.roadWidth = roadWidthCm / squareSizeCm;
         this.roadLength = roadLengthCm / squareSizeCm;
-        this.squareSizeCm = squareSizeCm;
 
         grid = new Grid(roadWidthCm / squareSizeCm, roadLengthCm / squareSizeCm);
         lightsWest = new TrafficLight(Direction.WEST, 10, 1, 10, 1, Light.RED);
@@ -80,117 +83,44 @@ public class Junction {
 //        }
 
         // All cars goes forward
-        int carSizeSquares = (Settings.carSize / squareSizeCm);
+        int carSizeSquares = (settings.carSizeCm / settings.squareSizeCm);
         for (Vehicle v : vehicles.values()) {
             int x = v.getX();
             int y = v.getY();
             int i, distanceToStop;
             double acceleration;
-            // Dir and position on the grid (in the future)
-            if (v.getFrom() == Direction.WEST) {
-                for (i = x + 1; i < 2 * roadLength + roadWidth; i++) {
-                    if (grid.get(i, y) != 0) break;
-                }
 
-                if (i >= roadLength && x <= (roadLength - 1) - (carSizeSquares-1)) // follow the traffic light
-                {
+            // Direction and position on the grid (in the future)
+            if (v.getFrom() == Direction.WEST) {
+                for (i = x + 1; i < 2 * roadLength + roadWidth; i++)
+                    if (grid.get(i, y) != 0) break;
+
+                if (i >= roadLength && x <= (roadLength - 1) - (carSizeSquares - 1)) {
                     if (lightsWest.getState() != Light.GREEN) {
                         distanceToStop = Math.abs(x - (roadLength - 1)) - (carSizeSquares - 1);
                         if (distanceToStop > 0) {
                             acceleration = -Math.pow(v.getSpeed(), 2) / (2 * distanceToStop);
-                            v.accelerate(acceleration);
+                            v.accelerate(acceleration, settings.carMaxSpeed);
                             x += v.getSpeed();
-                        } else {
-                            v.setSpeed(0);
-                        }
-
+                        } else v.setSpeed(0);
                     } else {
-                        v.accelerate(Settings.carAcceleration);
+                        v.accelerate(settings.carAcceleration, settings.carMaxSpeed);
                         x += v.getSpeed();
                     }
                 } else if (i < roadLength) {
-                    distanceToStop = Math.abs(x - i) - (carSizeSquares - 1) - Settings.minimalInterCarDistance;
+                    distanceToStop = Math.abs(x - i) - (carSizeSquares - 1) - settings.minimalInterCarDistance;
                     if (distanceToStop > 0) {
                         acceleration = -Math.pow(v.getSpeed(), 2) / (2 * distanceToStop);
-                        v.accelerate(acceleration);
+                        v.accelerate(acceleration, settings.carMaxSpeed);
                         x += v.getSpeed();
-                    } else {
-                        v.setSpeed(0);
-                    }
+                    } else v.setSpeed(0);
                 } else {
-                    v.accelerate(Settings.carAcceleration);
+                    v.accelerate(settings.carAcceleration, settings.carMaxSpeed);
                     x += v.getSpeed();
                 }
             }
-//                if (v.getX() > roadLength - 2 && v.getX() < roadLength && lightsWest.getState() != Light.GREEN) ;
-//                else x += v.getSpeed();
-//            } else if (v.getFrom() == Direction.NORTH) {
-//                if (v.getY() > roadLength - 2 && v.getY() < roadLength && lightsNorth.getState() != Light.GREEN) ;
-//                else y += v.getSpeed();
-//            } else if (v.getFrom() == Direction.EAST) {
-//                if (v.getX() < roadLength + roadWidth + 2 && v.getX() > roadLength + roadWidth && lightsEast.getState() != Light.GREEN)
-//                    ;
-//                else x -= v.getSpeed();
-//            } else if (v.getFrom() == Direction.SOUTH) {
-//                if (v.getY() < roadLength + roadWidth + 2 && v.getY() > roadLength + roadWidth && lightsSouth.getState() != Light.GREEN)
-//                    ;
-//                else y -= v.getSpeed();
-//            }
             moveVehicle(v, x, y);
         }
-        // Legacy code - will be used probably later
-//        int carSizeSquares = (Settings.carSize / squareSizeCm);
-//        int searchLength = Settings.minimalInterCarDistance / squareSizeCm + Settings.carSize / squareSizeCm;
-//        int searchWidth = 4 * carSizeSquares;
-//        int i, j;
-//        for (Vehicle v : vehicles.values()) {
-//            int x = v.getX();
-//            int y = v.getY();
-//            boolean leaveOuter = false;
-//            if (v.getFrom() == Direction.WEST) {
-//                int startX = v.getX() + 1 + carSizeSquares / 2;
-//                int startY = v.getY() - 2 * carSizeSquares;
-//                for (i = startX; i <= startX + searchLength; i++) {
-//                    for (j = startY; j <= startY + searchWidth; j++)
-//                        // TODO Brzydki kod
-//                        if (grid.get(i, j) != 0 && vehicles.get(new Pair<>(i, j)) != null && vehicles.get(new Pair<>(i, j)).getFrom() == v.getFrom()) {
-//                            leaveOuter = true;
-//                            break;
-//                        }
-//                    if(leaveOuter) break;
-//                }
-//                if (Math.abs(v.getX() - i) > searchLength)
-//                    x += v.getSpeed();
-//            } else if (v.getFrom() == Direction.NORTH) {
-//                int startX = v.getX() - 2 * carSizeSquares;
-//                int startY = v.getY() + carSizeSquares / 2;
-//                for (j = startY; j <= startY + searchLength; j++) {
-//                    for (i = startX; i <= startX + searchWidth; i++)
-//                        if (grid.get(i, j) != 0 && vehicles.get(new Pair<>(i, j)).getFrom() == v.getFrom()) break;
-//                }
-//                if (Math.abs(v.getY() - j) > searchLength)
-//                    y += v.getSpeed();
-//            } else if (v.getFrom() == Direction.EAST) {
-//                int startX = v.getX() - carSizeSquares / 2; // car's front
-//                int startY = v.getY() - 2 * carSizeSquares;
-//                for (i = startX; i >= startX - searchLength; i--) {
-//                    for (j = startY; j <= startY + searchWidth; j++)
-//                        if (grid.get(i, j) != 0 && vehicles.get(new Pair<>(i, j)).getFrom() == v.getFrom()) break;
-//                }
-//                if (Math.abs(v.getX() - i) > searchLength)
-//                    x -= v.getSpeed();
-//            } else if (v.getFrom() == Direction.SOUTH) {
-//                int startX = v.getX() - 2 * carSizeSquares; // car's front
-//                int startY = v.getY() - carSizeSquares / 2;
-//                for (j = startY; j >= startY - searchLength; j--) {
-//                    for (i = startX; i <= startX + searchWidth; i++)
-//                        if (grid.get(i, j) != 0 && vehicles.get(new Pair<>(i, j)).getFrom() == v.getFrom()) break;
-//                }
-//                if (Math.abs(v.getY() - j) > searchLength)
-//                    y -= v.getSpeed();
-//            }
-//            moveVehicle(v, x, y);
-//        }
 
         lightsEast.tick();
         lightsNorth.tick();
