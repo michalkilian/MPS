@@ -1,4 +1,4 @@
-package org.example.logic;
+package org.example.logic.Lights;
 
 public enum Light {
     GREEN,
