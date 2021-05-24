@@ -37,7 +37,7 @@ public class Junction {
 
         this.roadWidth = roadWidthCm / squareSizeCm;
         this.roadLength = roadLengthCm / squareSizeCm;
-        this.roadBorder = this.roadWidth/4;
+        this.roadBorder = this.roadWidth / 4;
 
         grid = new Grid(roadWidthCm / squareSizeCm, roadLengthCm / squareSizeCm);
         lightsWest = new TrafficLight(Direction.WEST, 10, 1, 10, 1, Light.GREEN);
@@ -116,12 +116,21 @@ public class Junction {
                                 acceleration = -Math.pow(v.getSpeed(), 2) / (2 * distanceToStop);
                                 v.accelerate(acceleration, settings.carMaxSpeed);
                                 x += v.getSpeed();
-                            } else{
+                            } else {
                                 v.setSpeed(0);
                                 v.setTurned(true);
                             }
-                        }
-                        else if (v.getTo() == Direction.EAST) {
+                        } else if (v.getTo() == Direction.NORTH) {
+                            distanceToStop = Math.abs(x - (roadLength + roadWidth - roadBorder));
+                            if (distanceToStop > 0) {
+                                acceleration = -Math.pow(v.getSpeed(), 2) / (2 * distanceToStop);
+                                v.accelerate(acceleration, settings.carMaxSpeed);
+                                x += v.getSpeed();
+                            } else {
+                                v.setSpeed(0);
+                                v.setTurned(true);
+                            }
+                        } else if (v.getTo() == Direction.EAST) {
                             v.accelerate(settings.carAcceleration, settings.carMaxSpeed);
                             x += v.getSpeed();
                         }
@@ -143,18 +152,28 @@ public class Junction {
                             acceleration = -Math.pow(v.getSpeed(), 2) / (2 * distanceToStop);
                             v.accelerate(acceleration, settings.carMaxSpeed);
                             x += v.getSpeed();
-                        } else{
+                        } else {
                             v.setSpeed(0);
                             v.setTurned(true);
                         }
-                    }
-                    else if (v.getTo() == Direction.EAST) {
+                    } else if (v.getTo() == Direction.NORTH) {
+                        distanceToStop = Math.abs(x - (roadLength + roadWidth - roadBorder));
+                        if (distanceToStop > 0) {
+                            acceleration = -Math.pow(v.getSpeed(), 2) / (2 * distanceToStop);
+                            v.accelerate(acceleration, settings.carMaxSpeed);
+                            x += v.getSpeed();
+                        } else {
+                            v.setSpeed(0);
+                            v.setTurned(true);
+                        }
+                    } else if (v.getTo() == Direction.EAST) {
                         v.accelerate(settings.carAcceleration, settings.carMaxSpeed);
                         x += v.getSpeed();
                     }
                 }
+            }
             // NORTH
-            } else if (v.getFrom() == Direction.NORTH && !v.isTurned() || v.getTo() == Direction.SOUTH && v.isTurned()) {
+            else if (v.getFrom() == Direction.NORTH && !v.isTurned() || v.getTo() == Direction.SOUTH && v.isTurned()) {
                 for (i = y + 1; i < 2 * roadLength + roadWidth; i++)
                     if (grid.get(x, i) != 0) break;
 
@@ -175,12 +194,11 @@ public class Junction {
                                 acceleration = -Math.pow(v.getSpeed(), 2) / (2 * distanceToStop);
                                 v.accelerate(acceleration, settings.carMaxSpeed);
                                 y += v.getSpeed();
-                            } else{
+                            } else {
                                 v.setSpeed(0);
                                 v.setTurned(true);
                             }
-                        }
-                        else if (v.getTo() == Direction.SOUTH) {
+                        } else if (v.getTo() == Direction.SOUTH) {
                             v.accelerate(settings.carAcceleration, settings.carMaxSpeed);
                             y += v.getSpeed();
                         }
@@ -197,6 +215,55 @@ public class Junction {
                 } else {
                     v.accelerate(settings.carAcceleration, settings.carMaxSpeed);
                     y += v.getSpeed();
+                }
+            }
+            // EAST
+            else if (v.getFrom() == Direction.EAST && !v.isTurned() || v.getTo() == Direction.WEST && v.isTurned()) {
+                System.out.println("Todo");
+            }
+            // SOUTH
+            else if (v.getFrom() == Direction.SOUTH && !v.isTurned() || v.getTo() == Direction.NORTH && v.isTurned()) {
+                for (i = y - 1; i >= 0; i--)
+                    if (grid.get(x, i) != 0) break;
+
+                // Nearest car further than lights
+                if (i >= roadLength + roadWidth && y >= (roadLength + roadWidth + 1) - (carSizeSquares - 1)) {
+                    if (lightsWest.getState() != Light.GREEN) {
+                        distanceToStop = Math.abs(y - (roadLength + roadWidth - 1)) - (carSizeSquares - 1);
+                        if (distanceToStop > 0) {
+                            acceleration = -Math.pow(v.getSpeed(), 2) / (2 * distanceToStop);
+                            v.accelerate(acceleration, settings.carMaxSpeed);
+                            y -= v.getSpeed();
+                        } else v.setSpeed(0);
+                    } else {
+                        // if (direction)
+                        if (v.getTo() == Direction.EAST) {
+                            distanceToStop = Math.abs(y - (roadLength + roadWidth - roadBorder));
+                            if (distanceToStop > 0) {
+                                acceleration = -Math.pow(v.getSpeed(), 2) / (2 * distanceToStop);
+                                v.accelerate(acceleration, settings.carMaxSpeed);
+                                y -= v.getSpeed();
+                            } else {
+                                v.setSpeed(0);
+                                v.setTurned(true);
+                            }
+                        } else if (v.getTo() == Direction.NORTH) {
+                            v.accelerate(settings.carAcceleration, settings.carMaxSpeed);
+                            y -= v.getSpeed();
+                        }
+                    }
+                    // A car in front
+                } else if (i > roadLength + roadWidth) {
+                    distanceToStop = Math.abs(x - i) - (carSizeSquares - 1) - settings.minimalInterCarDistance;
+                    if (distanceToStop > 0) {
+                        acceleration = -Math.pow(v.getSpeed(), 2) / (2 * distanceToStop);
+                        v.accelerate(acceleration, settings.carMaxSpeed);
+                        x += v.getSpeed();
+                    } else v.setSpeed(0);
+                    // Car not found
+                } else {
+                    v.accelerate(settings.carAcceleration, settings.carMaxSpeed);
+                    y -= v.getSpeed();
                 }
             }
             moveVehicle(v, x, y);

@@ -35,7 +35,7 @@ public class Main extends Application {
         Settings settings = new Settings(squareSizeCm, roadWidthCm, roadLengthCm, 2, 3, 1, squareSizeCm);
 
         Junction junction = new Junction(settings);
-        junction.placeVehicle(new Vehicle(0, roadLengthCm / squareSizeCm + 4, Direction.WEST, Direction.SOUTH, Type.CAR, 2));
+        junction.placeVehicle(new Vehicle(0, roadLengthCm / squareSizeCm + 4, Direction.WEST, Direction.NORTH, Type.CAR, 2));
 //        junction.placeVehicle(new Vehicle(5, roadLengthCm / squareSizeCm + 2, Direction.WEST, Type.CAR, 1));
 
         for (int i = 0; i < 20; i++) {
