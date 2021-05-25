@@ -55,7 +55,11 @@ public class MainMenuController extends BaseController implements Initializable 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         if (!Settings.initialized) {
-            settings = new Settings();
+            int squareSizeCm = 30;
+            int roadWidthCm = 6*squareSizeCm;
+            int roadLengthCm = 8*squareSizeCm;
+
+            settings = new Settings(squareSizeCm, roadWidthCm, roadLengthCm, 2, 3, 1, squareSizeCm);
             Settings.initialized = true;
         }
 

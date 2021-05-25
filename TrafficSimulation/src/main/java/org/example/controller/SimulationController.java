@@ -6,8 +6,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import org.example.logic.Junction;
 import org.example.logic.Settings;
 import org.example.logic.Simulation;
+import org.example.logic.cars.Direction;
+import org.example.logic.cars.Type;
+import org.example.logic.cars.Vehicle;
 
 import java.io.IOException;
 import java.net.URL;
@@ -23,6 +27,9 @@ public class SimulationController extends BaseController implements Initializabl
 
     @FXML
     private List<Label> labelList;
+
+
+
 
 
     AnimationTimer h = new AnimationTimer() {
@@ -64,6 +71,9 @@ public class SimulationController extends BaseController implements Initializabl
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        Junction junction = new Junction(settings);
+        junction.placeVehicle(new Vehicle(0, settings.roadLengthCm / settings.squareSizeCm + 2, Direction.WEST, Type.CAR, 2));
+        junction.placeVehicle(new Vehicle(5, settings.roadLengthCm / settings.squareSizeCm + 2, Direction.WEST, Type.CAR, 1));
 //        updateLabelsText();
 
     }
