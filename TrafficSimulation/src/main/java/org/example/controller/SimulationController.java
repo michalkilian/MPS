@@ -6,15 +6,19 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.GridPane;
 import org.example.logic.Junction;
 import org.example.logic.Settings;
 import org.example.logic.Simulation;
 import org.example.logic.cars.Direction;
 import org.example.logic.cars.Type;
 import org.example.logic.cars.Vehicle;
+import org.example.view.JunctionGrid;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -22,15 +26,21 @@ public class SimulationController extends BaseController implements Initializabl
     public Button backButton;
 
     public Button magicStartButton;
-
+    public Junction junction;
     public Simulation simulation;
+    public ScrollPane scrollPane;
+    private GridPane gridPane;
+    private JunctionGrid junctionGrid;
 
     @FXML
     private List<Label> labelList;
 
 
 
+    private void updateGrid(){
 
+
+    }
 
     AnimationTimer h = new AnimationTimer() {
         int i = 0;
@@ -56,7 +66,14 @@ public class SimulationController extends BaseController implements Initializabl
 
 
     void initSimulation() {
+        junction = new Junction(settings);
         this.simulation = new Simulation(settings);
+        this.junctionGrid = new JunctionGrid(junction.getRoadWidth(), junction.getRoadLength());
+        this.gridPane = (GridPane) junctionGrid.getFxGrid();
+        this.scrollPane.setContent(this.gridPane);
+        junction.placeVehicle(new Vehicle(0, settings.roadLengthCm / settings.squareSizeCm + 4, Direction.WEST, Direction.EAST, Type.CAR, 2));
+        junction.placeVehicle(new Vehicle(3, settings.roadLengthCm / settings.squareSizeCm + 4, Direction.WEST, Direction.NORTH, Type.CAR, 1));
+        this.scrollPane.setContent(junctionGrid.updateColors(junction));
     }
 
     void initSimulation(Simulation simulation) {
@@ -71,9 +88,7 @@ public class SimulationController extends BaseController implements Initializabl
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Junction junction = new Junction(settings);
-        junction.placeVehicle(new Vehicle(0, settings.roadLengthCm / settings.squareSizeCm + 2, Direction.WEST, Type.CAR, 2));
-        junction.placeVehicle(new Vehicle(5, settings.roadLengthCm / settings.squareSizeCm + 2, Direction.WEST, Type.CAR, 1));
+
 //        updateLabelsText();
 
     }
