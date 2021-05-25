@@ -185,44 +185,35 @@ public class Junction {
                 for (i = y - 1; i >= 0; i--)
                     if (grid.get(x, i) != 0) break;
 
+                distanceToCarStop = Math.abs(y - i) - (carSizeSquares - 1) - settings.minimalInterCarDistance;
+
                 // Nearest car further than lights
-                if (i >= roadLength + roadWidth && y >= (roadLength + roadWidth + 1) - (carSizeSquares - 1)) {
-                    if (lightsWest.getState() != Light.GREEN) {
-                        distanceToStop = Math.abs(y - (roadLength + roadWidth - 1)) - (carSizeSquares - 1);
-                        if (distanceToStop > 0) {
-                            acceleration = -Math.pow(v.getSpeed(), 2) / (2 * distanceToStop);
-                            v.accelerate(acceleration, settings.carMaxSpeed);
-                            y -= v.getSpeed();
-                        } else v.setSpeed(0);
-                    } else {
-                        // if (direction)
-                        if (v.getTo() == Direction.EAST) {
-                            distanceToStop = Math.abs(y - (roadLength + roadWidth - roadBorder));
-                            if (distanceToStop > 0) {
-                                acceleration = -Math.pow(v.getSpeed(), 2) / (2 * distanceToStop);
-                                v.accelerate(acceleration, settings.carMaxSpeed);
-                                y -= v.getSpeed();
-                            } else {
-                                v.setSpeed(0);
-                                v.setTurned(true);
-                            }
-                        } else if (v.getTo() == Direction.NORTH) {
+                if (i <= roadLength + roadWidth && y >= (roadLength + roadWidth + 1) - (carSizeSquares - 1) && lightsSouth.getState() != Light.GREEN) {
+                    distanceToStop = Math.abs(y - (roadLength + roadWidth + 1)) - (carSizeSquares - 1);
+                    y -= v.breaking(distanceToStop, false, settings);
+                }
+                // Nearest car before lights
+                else if (i > roadLength + roadWidth) {
+                    distanceToStop = distanceToCarStop;
+                    y -= v.breaking(distanceToStop, false, settings);
+                }
+                // Car passed lights
+                else {
+                    if (v.getTo() == Direction.EAST) {
+                        distanceToStop = Math.min(Math.abs(y - (roadLength + roadWidth - roadBorder - 1)), distanceToCarStop);
+                        y -= v.breaking(distanceToStop, distanceToStop != distanceToCarStop, settings);
+                    } else if (v.getTo() == Direction.WEST) {
+                        distanceToStop = Math.min(Math.abs(y - (roadLength + roadBorder)), distanceToCarStop);
+                        y -= v.breaking(distanceToStop, distanceToStop != distanceToCarStop, settings);
+                    } else if (v.getTo() == Direction.NORTH) {
+                        if (i == -1) {
                             v.accelerate(settings.carAcceleration, settings.carMaxSpeed);
                             y -= v.getSpeed();
+                        } else {
+                            distanceToStop = distanceToCarStop;
+                            y -= v.breaking(distanceToStop, false, settings);
                         }
                     }
-                    // A car in front
-                } else if (i > roadLength + roadWidth) {
-                    distanceToStop = Math.abs(x - i) - (carSizeSquares - 1) - settings.minimalInterCarDistance;
-                    if (distanceToStop > 0) {
-                        acceleration = -Math.pow(v.getSpeed(), 2) / (2 * distanceToStop);
-                        v.accelerate(acceleration, settings.carMaxSpeed);
-                        x += v.getSpeed();
-                    } else v.setSpeed(0);
-                    // Car not found
-                } else {
-                    v.accelerate(settings.carAcceleration, settings.carMaxSpeed);
-                    y -= v.getSpeed();
                 }
             }
             moveVehicle(v, x, y);
