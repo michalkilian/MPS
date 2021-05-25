@@ -3,6 +3,8 @@ package org.example.logic;
 
 import javafx.util.Pair;
 import lombok.Getter;
+import org.example.logic.Lights.Light;
+import org.example.logic.Lights.TrafficLight;
 import org.example.logic.cars.Direction;
 import org.example.logic.cars.Vehicle;
 
@@ -13,6 +15,7 @@ import java.util.Map;
 public class Junction {
     int roadWidth;
     int roadLength;
+    int roadBorder;
     Settings settings;
     int simulationTime;
 
@@ -34,11 +37,12 @@ public class Junction {
 
         this.roadWidth = roadWidthCm / squareSizeCm;
         this.roadLength = roadLengthCm / squareSizeCm;
+        this.roadBorder = this.roadWidth / 4;
 
         grid = new Grid(roadWidthCm / squareSizeCm, roadLengthCm / squareSizeCm);
-        lightsWest = new TrafficLight(Direction.WEST, 10, 1, 10, 1, Light.RED);
+        lightsWest = new TrafficLight(Direction.WEST, 10, 1, 10, 1, Light.GREEN);
         lightsNorth = new TrafficLight(Direction.NORTH, 10, 1, 10, 1, Light.GREEN);
-        lightsSouth = new TrafficLight(Direction.SOUTH, 10, 1, 10, 1, Light.RED);
+        lightsSouth = new TrafficLight(Direction.SOUTH, 10, 1, 10, 1, Light.GREEN);
         lightsEast = new TrafficLight(Direction.EAST, 10, 1, 10, 1, Light.GREEN);
     }
 
@@ -61,62 +65,141 @@ public class Junction {
     public void tick() {
         simulationTime++;
 
-//        for (Vehicle v : vehicles.values()) {
-//            int x = v.getX();
-//            int y = v.getY();
-//            if (v.getFrom() == Direction.WEST) {
-//                if (v.getX() > roadLength - 2 && v.getX() < roadLength && lightsWest.getState() != Light.GREEN) ;
-//                else x += v.getSpeed();
-//            } else if (v.getFrom() == Direction.NORTH) {
-//                if (v.getY() > roadLength - 2 && v.getY() < roadLength && lightsNorth.getState() != Light.GREEN) ;
-//                else y += v.getSpeed();
-//            } else if (v.getFrom() == Direction.EAST) {
-//                if (v.getX() < roadLength + roadWidth + 2 && v.getX() > roadLength + roadWidth && lightsEast.getState() != Light.GREEN)
-//                    ;
-//                else x -= v.getSpeed();
-//            } else if (v.getFrom() == Direction.SOUTH) {
-//                if (v.getY() < roadLength + roadWidth + 2 && v.getY() > roadLength + roadWidth && lightsSouth.getState() != Light.GREEN)
-//                    ;
-//                else y -= v.getSpeed();
-//            }
-//            moveVehicle(v, x, y);
-//        }
-
-        // All cars goes forward
         int carSizeSquares = (settings.carSizeCm / settings.squareSizeCm);
         for (Vehicle v : vehicles.values()) {
             int x = v.getX();
             int y = v.getY();
-            int i, distanceToStop;
+            int i, distanceToStop, distanceToCarStop;
             double acceleration;
 
-            // Direction and position on the grid (in the future)
-            if (v.getFrom() == Direction.WEST) {
+            // WEST
+            if (v.getFrom() == Direction.WEST && !v.isTurned() || v.getTo() == Direction.EAST && v.isTurned()) {
                 for (i = x + 1; i < 2 * roadLength + roadWidth; i++)
                     if (grid.get(i, y) != 0) break;
 
-                if (i >= roadLength && x <= (roadLength - 1) - (carSizeSquares - 1)) {
+                distanceToCarStop = Math.abs(x - i) - (carSizeSquares - 1) - settings.minimalInterCarDistance;
+
+                // Nearest car further than lights
+                if (i >= roadLength && x <= (roadLength - 1) - (carSizeSquares - 1) && lightsWest.getState() != Light.GREEN) {
+                    distanceToStop = Math.abs(x - (roadLength - 1)) - (carSizeSquares - 1);
+                    x += v.breaking(distanceToStop, false, settings);
+                }
+                // Nearest car before lights
+                else if (i < roadLength) {
+                    distanceToStop = distanceToCarStop;
+                    x += v.breaking(distanceToStop, false, settings);
+                }
+                // Car passed lights
+                else {
+                    if (v.getTo() == Direction.SOUTH) {
+                        distanceToStop = Math.min(Math.abs(x - (roadLength + roadBorder)), distanceToCarStop);
+                        x += v.breaking(distanceToStop, distanceToStop != distanceToCarStop, settings);
+                    } else if (v.getTo() == Direction.NORTH) {
+                        distanceToStop = Math.min(Math.abs(x - (roadLength + roadWidth - roadBorder)), distanceToCarStop);
+                        x += v.breaking(distanceToStop, distanceToStop != distanceToCarStop, settings);
+                    } else if (v.getTo() == Direction.EAST) {
+                        if (i == 2 * roadLength + roadWidth - 1) {
+                            v.accelerate(settings.carAcceleration, settings.carMaxSpeed);
+                            x += v.getSpeed();
+                        } else {
+                            distanceToStop = distanceToCarStop;
+                            x += v.breaking(distanceToStop, false, settings);
+                        }
+                    }
+                }
+            }
+            // NORTH
+            else if (v.getFrom() == Direction.NORTH && !v.isTurned() || v.getTo() == Direction.SOUTH && v.isTurned()) {
+                for (i = y + 1; i < 2 * roadLength + roadWidth; i++)
+                    if (grid.get(x, i) != 0) break;
+
+                // Nearest car further than lights
+                if (i >= roadLength && y <= (roadLength - 1) - (carSizeSquares - 1)) {
                     if (lightsWest.getState() != Light.GREEN) {
-                        distanceToStop = Math.abs(x - (roadLength - 1)) - (carSizeSquares - 1);
+                        distanceToStop = Math.abs(y - (roadLength - 1)) - (carSizeSquares - 1);
                         if (distanceToStop > 0) {
                             acceleration = -Math.pow(v.getSpeed(), 2) / (2 * distanceToStop);
                             v.accelerate(acceleration, settings.carMaxSpeed);
-                            x += v.getSpeed();
+                            y += v.getSpeed();
                         } else v.setSpeed(0);
                     } else {
-                        v.accelerate(settings.carAcceleration, settings.carMaxSpeed);
-                        x += v.getSpeed();
+                        // if (direction)
+                        if (v.getTo() == Direction.WEST) {
+                            distanceToStop = Math.abs(y - (roadLength + roadBorder));
+                            if (distanceToStop > 0) {
+                                acceleration = -Math.pow(v.getSpeed(), 2) / (2 * distanceToStop);
+                                v.accelerate(acceleration, settings.carMaxSpeed);
+                                y += v.getSpeed();
+                            } else {
+                                v.setSpeed(0);
+                                v.setTurned(true);
+                            }
+                        } else if (v.getTo() == Direction.SOUTH) {
+                            v.accelerate(settings.carAcceleration, settings.carMaxSpeed);
+                            y += v.getSpeed();
+                        }
                     }
+                    // A car in front
                 } else if (i < roadLength) {
+                    distanceToStop = Math.abs(y - i) - (carSizeSquares - 1) - settings.minimalInterCarDistance;
+                    if (distanceToStop > 0) {
+                        acceleration = -Math.pow(v.getSpeed(), 2) / (2 * distanceToStop);
+                        v.accelerate(acceleration, settings.carMaxSpeed);
+                        y += v.getSpeed();
+                    } else v.setSpeed(0);
+                    // Car not found
+                } else {
+                    v.accelerate(settings.carAcceleration, settings.carMaxSpeed);
+                    y += v.getSpeed();
+                }
+            }
+            // EAST
+            else if (v.getFrom() == Direction.EAST && !v.isTurned() || v.getTo() == Direction.WEST && v.isTurned()) {
+                System.out.println("Todo");
+            }
+            // SOUTH
+            else if (v.getFrom() == Direction.SOUTH && !v.isTurned() || v.getTo() == Direction.NORTH && v.isTurned()) {
+                for (i = y - 1; i >= 0; i--)
+                    if (grid.get(x, i) != 0) break;
+
+                // Nearest car further than lights
+                if (i >= roadLength + roadWidth && y >= (roadLength + roadWidth + 1) - (carSizeSquares - 1)) {
+                    if (lightsWest.getState() != Light.GREEN) {
+                        distanceToStop = Math.abs(y - (roadLength + roadWidth - 1)) - (carSizeSquares - 1);
+                        if (distanceToStop > 0) {
+                            acceleration = -Math.pow(v.getSpeed(), 2) / (2 * distanceToStop);
+                            v.accelerate(acceleration, settings.carMaxSpeed);
+                            y -= v.getSpeed();
+                        } else v.setSpeed(0);
+                    } else {
+                        // if (direction)
+                        if (v.getTo() == Direction.EAST) {
+                            distanceToStop = Math.abs(y - (roadLength + roadWidth - roadBorder));
+                            if (distanceToStop > 0) {
+                                acceleration = -Math.pow(v.getSpeed(), 2) / (2 * distanceToStop);
+                                v.accelerate(acceleration, settings.carMaxSpeed);
+                                y -= v.getSpeed();
+                            } else {
+                                v.setSpeed(0);
+                                v.setTurned(true);
+                            }
+                        } else if (v.getTo() == Direction.NORTH) {
+                            v.accelerate(settings.carAcceleration, settings.carMaxSpeed);
+                            y -= v.getSpeed();
+                        }
+                    }
+                    // A car in front
+                } else if (i > roadLength + roadWidth) {
                     distanceToStop = Math.abs(x - i) - (carSizeSquares - 1) - settings.minimalInterCarDistance;
                     if (distanceToStop > 0) {
                         acceleration = -Math.pow(v.getSpeed(), 2) / (2 * distanceToStop);
                         v.accelerate(acceleration, settings.carMaxSpeed);
                         x += v.getSpeed();
                     } else v.setSpeed(0);
+                    // Car not found
                 } else {
                     v.accelerate(settings.carAcceleration, settings.carMaxSpeed);
-                    x += v.getSpeed();
+                    y -= v.getSpeed();
                 }
             }
             moveVehicle(v, x, y);

@@ -24,7 +24,7 @@ public class Grid {
         else if (x >= lengthInCells + widthInCells && x < 2 * lengthInCells + widthInCells && y >= lengthInCells && y < lengthInCells + widthInCells)
             right[x - lengthInCells - widthInCells][y - lengthInCells] = val;
         else
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException("Grid.set(" + x + "," + y + "," + val + ")");
     }
 
     public int get(int x, int y) {
@@ -35,7 +35,7 @@ public class Grid {
         else if (x >= lengthInCells + widthInCells && x < 2 * lengthInCells + widthInCells && y >= lengthInCells && y < lengthInCells + widthInCells)
             return right[x - (lengthInCells + widthInCells)][y - lengthInCells];
         else
-            throw new IndexOutOfBoundsException();
+            throw new IndexOutOfBoundsException("Grid.get(" + x + "," + y + ")");
     }
 
     public String toString() {
