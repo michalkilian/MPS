@@ -64,13 +64,12 @@ public class Junction {
 
     public void tick() {
         simulationTime++;
-
+        Grid nextFrame = new Grid(roadWidth, roadLength);
         int carSizeSquares = (settings.carSizeCm / settings.squareSizeCm);
         for (Vehicle v : vehicles.values()) {
             int x = v.getX();
             int y = v.getY();
             int i, distanceToStop, distanceToCarStop;
-            double acceleration;
 
             // WEST
             if (v.getFrom() == Direction.WEST && !v.isTurned() || v.getTo() == Direction.EAST && v.isTurned()) {
@@ -78,7 +77,6 @@ public class Junction {
                     if (grid.get(i, y) != 0) break;
 
                 distanceToCarStop = Math.abs(x - i) - (carSizeSquares - 1) - settings.minimalInterCarDistance;
-
                 // Nearest car further than lights
                 if (i >= roadLength && x <= (roadLength - 1) - (carSizeSquares - 1) && lightsWest.getState() != Light.GREEN) {
                     distanceToStop = Math.abs(x - (roadLength - 1)) - (carSizeSquares - 1);
@@ -114,7 +112,6 @@ public class Junction {
                     if (grid.get(x, i) != 0) break;
 
                 distanceToCarStop = Math.abs(y - i) - (carSizeSquares - 1) - settings.minimalInterCarDistance;
-
                 // Nearest car further than lights
                 if (i >= roadLength && y <= (roadLength + 1) - (carSizeSquares - 1) && lightsNorth.getState() != Light.GREEN) {
                     distanceToStop = Math.abs(y - (roadLength - 1)) - (carSizeSquares - 1);
@@ -150,7 +147,6 @@ public class Junction {
                     if (grid.get(i, y) != 0) break;
 
                 distanceToCarStop = Math.abs(x - i) - (carSizeSquares - 1) - settings.minimalInterCarDistance;
-
                 // Nearest car further than lights
                 if (i <= roadLength + roadWidth && x >= (roadLength + roadWidth + 1) - (carSizeSquares - 1) && lightsEast.getState() != Light.GREEN) {
                     distanceToStop = Math.abs(x - (roadLength + roadWidth + 1)) - (carSizeSquares - 1);
@@ -186,7 +182,6 @@ public class Junction {
                     if (grid.get(x, i) != 0) break;
 
                 distanceToCarStop = Math.abs(y - i) - (carSizeSquares - 1) - settings.minimalInterCarDistance;
-
                 // Nearest car further than lights
                 if (i <= roadLength + roadWidth && y >= (roadLength + roadWidth + 1) - (carSizeSquares - 1) && lightsSouth.getState() != Light.GREEN) {
                     distanceToStop = Math.abs(y - (roadLength + roadWidth + 1)) - (carSizeSquares - 1);
@@ -216,9 +211,16 @@ public class Junction {
                     }
                 }
             }
-            moveVehicle(v, x, y);
+            // Set vehicle's position in the nextFrame
+            try {
+                nextFrame.set(x, y, v.getType().getValue());
+                v.setX(x);
+                v.setY(y);
+            } catch (IndexOutOfBoundsException e) {
+                vehicles.remove(new Pair<>(v.getX(), v.getY()));
+            }
         }
-
+        grid.rewriteGrid(nextFrame);
         lightsEast.tick();
         lightsNorth.tick();
         lightsWest.tick();
