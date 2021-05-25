@@ -17,12 +17,15 @@ import java.util.ResourceBundle;
 public class OptionsController extends BaseController implements Initializable {
     public Button backButton;
 
-    public ChoiceBox<String> timeBox = new ChoiceBox();
+    public ChoiceBox<String> timeBox = new ChoiceBox<>();
     public Spinner<Integer> carMaxVelocity;
     public Spinner<Integer> tirMaxVelocity;
 
     @FXML
     public Label poraDniaLabel;
+    public Spinner<Integer> carMaxSpeed;
+    public Spinner<Integer> carAcceleration;
+    public Spinner<Integer> carMinimalInterDistance;
 
 
     @Override
@@ -44,14 +47,16 @@ public class OptionsController extends BaseController implements Initializable {
     }
 
     void initSpinners() {
-        tirMaxVelocity.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 3, settings.getCarMaxVelocity()));
-        carMaxVelocity.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(4, 7, settings.getCarMaxUpperVelocity()));
+        carMaxSpeed.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(2,5,settings.carMaxSpeed));
+        carAcceleration.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 3, settings.carAcceleration));
+        carMinimalInterDistance.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 3, settings.minimalInterCarDistance));
     }
 
     @Override
     public void goBackToMenu(ActionEvent event) throws IOException {
-        settings.setCarMaxVelocity(tirMaxVelocity.getValue());
-        settings.setCarMaxUpperVelocity(carMaxVelocity.getValue());
+        settings.carMaxSpeed = carMaxSpeed.getValue();
+        settings.carAcceleration = carAcceleration.getValue();
+        settings.minimalInterCarDistance = carMinimalInterDistance.getValue();
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../MainMenu.fxml"));
 
