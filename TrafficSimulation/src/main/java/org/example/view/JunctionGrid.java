@@ -68,7 +68,7 @@ public class JunctionGrid {
         gridPane.setPrefSize(x*3, y*3);
         for(int i = 0; i < x; ++i){
             for(int j = 0; j < y; ++j){
-                gridPane.add(getCellMatrix()[i][j], j, i);
+                gridPane.add(getCellMatrix()[i][j], i, j);
             }
         }
         return gridPane;
