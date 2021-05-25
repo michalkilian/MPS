@@ -38,6 +38,21 @@ public class Grid {
             throw new IndexOutOfBoundsException("Grid.get(" + x + "," + y + ")");
     }
 
+    public void rewriteGrid(Grid grid) {
+        if (widthInCells != grid.widthInCells || lengthInCells != grid.lengthInCells)
+            throw new IllegalArgumentException("Grid's dimensions have to be equal: (" + widthInCells + "," + lengthInCells + ") != (" + this.widthInCells + "," + this.lengthInCells + ")");
+        for (int i = 0; i < left.length; i++) {
+            System.arraycopy(grid.left[i], 0, this.left[i], 0, left[i].length);
+        }
+        for (int i = 0; i < middle.length; i++) {
+            System.arraycopy(grid.middle[i], 0, this.middle[i], 0, middle[i].length);
+        }
+        for (int i = 0; i < right.length; i++) {
+            System.arraycopy(grid.right[i], 0, this.right[i], 0, right[i].length);
+        }
+
+    }
+
     public String toString() {
         StringBuilder str = new StringBuilder();
         for (int i = 0; i < 2 * lengthInCells + widthInCells; i++) {
