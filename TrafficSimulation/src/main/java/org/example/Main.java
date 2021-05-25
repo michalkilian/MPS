@@ -39,10 +39,14 @@ public class Main extends Application {
 //        junction.placeVehicle(new Vehicle(0, roadLengthCm / squareSizeCm + 4, Direction.WEST, Direction.EAST, Type.CAR, 2));
 //        junction.placeVehicle(new Vehicle(3, roadLengthCm / squareSizeCm + 4, Direction.WEST, Direction.NORTH, Type.CAR, 1));
 //        junction.placeVehicle(new Vehicle(6, roadLengthCm / squareSizeCm + 4, Direction.WEST, Direction.SOUTH, Type.CAR, 1));
+        // NORTH tests
+        junction.placeVehicle(new Vehicle(roadLengthCm/squareSizeCm + 1, 0, Direction.NORTH, Direction.SOUTH, Type.CAR, 2));
+        junction.placeVehicle(new Vehicle(roadLengthCm/squareSizeCm + 1, 3, Direction.NORTH, Direction.EAST, Type.CAR, 1));
+        junction.placeVehicle(new Vehicle(roadLengthCm/squareSizeCm + 1, 6, Direction.NORTH, Direction.WEST, Type.CAR, 1));
         // EAST tests
-        junction.placeVehicle(new Vehicle((2 * roadLengthCm + roadWidthCm)/squareSizeCm - 1, roadLengthCm / squareSizeCm + 1, Direction.EAST, Direction.WEST, Type.CAR, 2));
-        junction.placeVehicle(new Vehicle((2 * roadLengthCm + roadWidthCm)/squareSizeCm - 4, roadLengthCm / squareSizeCm + 1, Direction.EAST, Direction.SOUTH, Type.CAR, 1));
-        junction.placeVehicle(new Vehicle((2 * roadLengthCm + roadWidthCm)/squareSizeCm - 7, roadLengthCm / squareSizeCm + 1, Direction.EAST, Direction.NORTH, Type.CAR, 1));
+//        junction.placeVehicle(new Vehicle((2 * roadLengthCm + roadWidthCm)/squareSizeCm - 1, roadLengthCm / squareSizeCm + 1, Direction.EAST, Direction.WEST, Type.CAR, 2));
+//        junction.placeVehicle(new Vehicle((2 * roadLengthCm + roadWidthCm)/squareSizeCm - 4, roadLengthCm / squareSizeCm + 1, Direction.EAST, Direction.SOUTH, Type.CAR, 1));
+//        junction.placeVehicle(new Vehicle((2 * roadLengthCm + roadWidthCm)/squareSizeCm - 7, roadLengthCm / squareSizeCm + 1, Direction.EAST, Direction.NORTH, Type.CAR, 1));
 
 
 
