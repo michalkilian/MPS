@@ -95,7 +95,7 @@ public class Junction {
                         distanceToStop = Math.min(Math.abs(x - (roadLength + roadBorder)), distanceToCarStop);
                         x += v.breaking(distanceToStop, distanceToStop != distanceToCarStop, settings);
                     } else if (v.getTo() == Direction.NORTH) {
-                        distanceToStop = Math.min(Math.abs(x - (roadLength + roadWidth - roadBorder)), distanceToCarStop);
+                        distanceToStop = Math.min(Math.abs(x - (roadLength + roadWidth - roadBorder - 1)), distanceToCarStop);
                         x += v.breaking(distanceToStop, distanceToStop != distanceToCarStop, settings);
                     } else if (v.getTo() == Direction.EAST) {
                         if (i == 2 * roadLength + roadWidth - 1) {
@@ -155,7 +155,39 @@ public class Junction {
             }
             // EAST
             else if (v.getFrom() == Direction.EAST && !v.isTurned() || v.getTo() == Direction.WEST && v.isTurned()) {
-                System.out.println("Todo");
+                for (i = x - 1; i >= 0; i--)
+                    if (grid.get(i, y) != 0) break;
+
+                distanceToCarStop = Math.abs(x - i) - (carSizeSquares - 1) - settings.minimalInterCarDistance;
+
+                // Nearest car further than lights
+                if (i <= roadLength + roadWidth && x >= (roadLength + roadWidth + 1) - (carSizeSquares - 1) && lightsEast.getState() != Light.GREEN) {
+                    distanceToStop = Math.abs(x - (roadLength + roadWidth + 1)) - (carSizeSquares - 1);
+                    x -= v.breaking(distanceToStop, false, settings);
+                }
+                // Nearest car before lights
+                else if (i > roadLength + roadWidth) {
+                    distanceToStop = distanceToCarStop;
+                    x -= v.breaking(distanceToStop, false, settings);
+                }
+                // Car passed lights
+                else {
+                    if (v.getTo() == Direction.NORTH) {
+                        distanceToStop = Math.min(Math.abs(x - (roadLength + roadWidth - roadBorder - 1)), distanceToCarStop);
+                        x -= v.breaking(distanceToStop, distanceToStop != distanceToCarStop, settings);
+                    } else if (v.getTo() == Direction.SOUTH) {
+                        distanceToStop = Math.min(Math.abs(x - (roadLength + roadBorder)), distanceToCarStop);
+                        x -= v.breaking(distanceToStop, distanceToStop != distanceToCarStop, settings);
+                    } else if (v.getTo() == Direction.WEST) {
+                        if (i == -1) {
+                            v.accelerate(settings.carAcceleration, settings.carMaxSpeed);
+                            x -= v.getSpeed();
+                        } else {
+                            distanceToStop = distanceToCarStop;
+                            x -= v.breaking(distanceToStop, false, settings);
+                        }
+                    }
+                }
             }
             // SOUTH
             else if (v.getFrom() == Direction.SOUTH && !v.isTurned() || v.getTo() == Direction.NORTH && v.isTurned()) {
