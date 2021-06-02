@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import org.example.logic.Junction;
 import org.example.logic.Settings;
 
 import java.io.IOException;
@@ -60,6 +61,7 @@ public class MainMenuController extends BaseController implements Initializable 
             int roadLengthCm = 8*squareSizeCm;
 
             settings = new Settings(squareSizeCm, roadWidthCm, roadLengthCm, 2, 3, 1, squareSizeCm);
+
             Settings.initialized = true;
         }
 
