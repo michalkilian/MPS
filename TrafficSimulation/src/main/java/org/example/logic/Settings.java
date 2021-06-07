@@ -4,7 +4,6 @@ public class Settings {
 
     public static boolean initialized = false;
 
-    //public String[] times = new String[]{"Noc", "Poranek", "Popołudnie"};
     private int time;
     //public static int[] throughput = {10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10};
 
@@ -22,6 +21,11 @@ public class Settings {
     // Michal's
     public static int carMaxVelocity = 3;
     public static int carMaxUpperVelocity = 2;
+    public String[] traffics = new String[]{"High", "Moderate", "Low"};
+    private int traffic;
+    public double probLeft = 0.33;
+    public double probStraight = 0.34;
+    public double probRight = 0.33;
 
     public Settings() {}
     public Settings(int squareSizeCm, int roadWidthCm, int roadLengthCm, int minimalInterCarDistance, int carMaxSpeed, int carAcceleration, int carSizeCm) {
@@ -34,12 +38,12 @@ public class Settings {
         this.carSizeCm = carSizeCm;
     }
 
-    public int getTime() {
-        return time;
+    public int getTraffic() {
+        return traffic;
     }
 
-    public void setTime(int time) {
-        this.time = time;
+    public void setTraffic(int traffic) {
+        this.traffic = traffic;
     }
 
     public int getCarMaxVelocity() {

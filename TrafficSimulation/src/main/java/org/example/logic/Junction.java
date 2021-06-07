@@ -41,8 +41,8 @@ public class Junction {
 
         grid = new Grid(roadWidthCm / squareSizeCm, roadLengthCm / squareSizeCm);
         lightsWest = new TrafficLight(Direction.WEST, 10, 1, 10, 1, Light.GREEN);
-        lightsNorth = new TrafficLight(Direction.NORTH, 10, 1, 10, 1, Light.GREEN);
-        lightsSouth = new TrafficLight(Direction.SOUTH, 10, 1, 10, 1, Light.GREEN);
+        lightsNorth = new TrafficLight(Direction.NORTH, 10, 1, 10, 1, Light.RED);
+        lightsSouth = new TrafficLight(Direction.SOUTH, 10, 1, 10, 1, Light.RED);
         lightsEast = new TrafficLight(Direction.EAST, 10, 1, 10, 1, Light.GREEN);
     }
 

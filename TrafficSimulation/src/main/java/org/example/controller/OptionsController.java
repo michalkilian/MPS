@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,7 +18,6 @@ import java.util.ResourceBundle;
 public class OptionsController extends BaseController implements Initializable {
     public Button backButton;
 
-    public ChoiceBox<String> timeBox = new ChoiceBox<>();
     public Spinner<Integer> carMaxVelocity;
     public Spinner<Integer> tirMaxVelocity;
 
@@ -26,6 +26,10 @@ public class OptionsController extends BaseController implements Initializable {
     public Spinner<Integer> carMaxSpeed;
     public Spinner<Integer> carAcceleration;
     public Spinner<Integer> carMinimalInterDistance;
+    public ChoiceBox<String> trafficBox = new ChoiceBox();
+    public TextField leftBox;
+    public TextField straightBox;
+    public TextField rightBox;
 
 
     @Override
@@ -33,15 +37,18 @@ public class OptionsController extends BaseController implements Initializable {
         this.settings = settings;
     }
 
-//    void initTime() {
-//        timeBox.setItems(FXCollections.observableArrayList("Noc", "Poranek", "Popołudnie"));
-//        timeBox.setValue(settings.times[settings.getTime()]);
-//    }
+    void initTraffic() {
+        trafficBox.setItems(FXCollections.observableArrayList("High", "Moderate", "Low"));
+        trafficBox.setValue(settings.traffics[settings.getTraffic()]);
+        this.leftBox.setText(String.valueOf(settings.probLeft));
+        this.straightBox.setText(String.valueOf(settings.probStraight));
+        this.rightBox.setText(String.valueOf(settings.probRight));
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        timeBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
-            settings.setTime(newValue.intValue());
+        trafficBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
+            settings.setTraffic(newValue.intValue());
 
         });
     }
@@ -57,6 +64,9 @@ public class OptionsController extends BaseController implements Initializable {
         settings.carMaxSpeed = carMaxSpeed.getValue();
         settings.carAcceleration = carAcceleration.getValue();
         settings.minimalInterCarDistance = carMinimalInterDistance.getValue();
+        settings.probLeft = Double.parseDouble(leftBox.getText());
+        settings.probStraight = Double.parseDouble(straightBox.getText());
+        settings.probRight = Double.parseDouble(rightBox.getText());
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("../MainMenu.fxml"));
 

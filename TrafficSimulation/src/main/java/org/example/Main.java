@@ -27,7 +27,7 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-//        launch(args);
+        launch(args);
         int squareSizeCm = 30;
         int roadWidthCm = 6*squareSizeCm;
         int roadLengthCm = 8*squareSizeCm;
@@ -40,7 +40,7 @@ public class Main extends Application {
         junction.placeVehicle(new Vehicle(2, roadLengthCm / squareSizeCm + 4, Direction.WEST, Direction.NORTH, Type.CAR, 1));
         junction.placeVehicle(new Vehicle(4, roadLengthCm / squareSizeCm + 4, Direction.WEST, Direction.SOUTH, Type.CAR, 1));
         // NORTH tests
-//        junction.placeVehicle(new Vehicle(roadLengthCm/squareSizeCm + 1, 0, Direction.NORTH, Direction.SOUTH, Type.CAR, 2));
+   //     junction.placeVehicle(new Vehicle(roadLengthCm/squareSizeCm + 1, 0, Direction.NORTH, Direction.SOUTH, Type.CAR, 2));
 //        junction.placeVehicle(new Vehicle(roadLengthCm/squareSizeCm + 1, 3, Direction.NORTH, Direction.EAST, Type.CAR, 1));
 //        junction.placeVehicle(new Vehicle(roadLengthCm/squareSizeCm + 1, 6, Direction.NORTH, Direction.WEST, Type.CAR, 1));
         // EAST tests
@@ -53,19 +53,19 @@ public class Main extends Application {
 //        junction.placeVehicle(new Vehicle(roadLengthCm/squareSizeCm + 4, (2 * roadLengthCm + roadWidthCm)/squareSizeCm - 7, Direction.SOUTH, Direction.EAST, Type.CAR, 1));
 
 
-        for (int i = 0; i < 20; i++) {
-            try {
-                PrintWriter p = new PrintWriter("gridVisualizations/vis-" + junction.getSimulationTime() + ".txt", StandardCharsets.UTF_8);
-                p.println(junction.getSimulationTime());
-                p.println("---");
-                p.print(junction.lightsState());
-                p.println("---");
-                p.println(junction.grid.toString());
-                p.close();
-                junction.tick();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+//        for (int i = 0; i < 20; i++) {
+//                try {
+//                    PrintWriter p = new PrintWriter("gridVisualizations/vis-" + junction.getSimulationTime() + ".txt", StandardCharsets.UTF_8);
+//                    p.println(junction.getSimulationTime());
+//                    p.println("---");
+//                    p.print(junction.lightsState());
+//                    p.println("---");
+//                    p.println(junction.grid.toString());
+//                    p.close();
+//                    junction.tick();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//        }
     }
 }
