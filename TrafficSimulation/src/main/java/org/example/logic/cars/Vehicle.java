@@ -3,6 +3,8 @@ package org.example.logic.cars;
 import lombok.Data;
 import org.example.logic.Settings;
 
+import java.util.UUID;
+
 @Data
 public class Vehicle {
     int x;
@@ -10,6 +12,7 @@ public class Vehicle {
     Direction from;
     Direction to;
     Type type;
+    String ID;
     int distanceNearestPrev;
     int distanceNearest;
     int speed;
@@ -22,6 +25,7 @@ public class Vehicle {
         this.to = to;
         this.type = type;
         this.speed = speed;
+        this.ID = String.valueOf(UUID.randomUUID());
     }
 
     public void accelerate(double acceleration, int carMaxSpeed) {

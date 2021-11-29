@@ -1,14 +1,15 @@
 package org.example.logic;
 
 
-import javafx.util.Pair;
 import lombok.Getter;
 import org.example.logic.Lights.Light;
 import org.example.logic.Lights.TrafficLight;
 import org.example.logic.cars.Direction;
 import org.example.logic.cars.Vehicle;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -20,7 +21,7 @@ public class Junction {
     int simulationTime;
 
     public Grid grid;
-    Map<Pair<Integer, Integer>, Vehicle> vehicles = new HashMap<>();
+    Map<String, Vehicle> vehicles = new HashMap<>();
     TrafficLight lightsWest;
     TrafficLight lightsNorth;
     TrafficLight lightsSouth;
@@ -53,16 +54,17 @@ public class Junction {
             v.setX(x);
             v.setY(y);
         } catch (IndexOutOfBoundsException e) {
-            vehicles.remove(new Pair<>(v.getX(), v.getY()));
+            vehicles.remove(v.getID());
         }
     }
 
     public void placeVehicle(Vehicle v) {
-        vehicles.put(new Pair<>(v.getX(), v.getY()), v);
+        vehicles.put(v.getID(), v);
         grid.set(v.getX(), v.getY(), v.getType().getValue());
     }
 
     public void tick() {
+        List<String> toRemove = new ArrayList<>();
         simulationTime++;
         Grid nextFrame = new Grid(roadWidth, roadLength);
         int carSizeSquares = (settings.carSizeCm / settings.squareSizeCm);
@@ -113,7 +115,7 @@ public class Junction {
 
                 distanceToCarStop = Math.abs(y - i) - (carSizeSquares - 1) - settings.minimalInterCarDistance;
                 // Nearest car further than lights
-                if (i >= roadLength && y <= (roadLength + 1) - (carSizeSquares - 1) && lightsNorth.getState() != Light.GREEN) {
+                if (i >= roadLength && y < (roadLength + 1) - (carSizeSquares - 1) && lightsNorth.getState() != Light.GREEN) {
                     distanceToStop = Math.abs(y - (roadLength - 1)) - (carSizeSquares - 1);
                     y += v.breaking(distanceToStop, false, settings);
                 }
@@ -217,9 +219,14 @@ public class Junction {
                 v.setX(x);
                 v.setY(y);
             } catch (IndexOutOfBoundsException e) {
-                vehicles.remove(new Pair<>(v.getX(), v.getY()));
+                toRemove.add(v.getID());
             }
         }
+        for(String s: toRemove)
+        {
+            vehicles.remove(s);
+        }
+
         grid.rewriteGrid(nextFrame);
         lightsEast.tick();
         lightsNorth.tick();

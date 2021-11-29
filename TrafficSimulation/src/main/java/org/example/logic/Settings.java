@@ -23,9 +23,9 @@ public class Settings {
     public static int carMaxUpperVelocity = 2;
     public String[] traffics = new String[]{"High", "Moderate", "Low"};
     private int traffic;
-    public double probLeft = 0.33;
-    public double probStraight = 0.34;
-    public double probRight = 0.33;
+    public double probLeft = 0;
+    public double probStraight = 0;
+    public double probRight = 1;
 
     public Settings() {}
     public Settings(int squareSizeCm, int roadWidthCm, int roadLengthCm, int minimalInterCarDistance, int carMaxSpeed, int carAcceleration, int carSizeCm) {
