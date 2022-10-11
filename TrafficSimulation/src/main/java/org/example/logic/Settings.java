@@ -4,9 +4,6 @@ public class Settings {
 
     public static boolean initialized = false;
 
-    private int time;
-    //public static int[] throughput = {10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10};
-
     // Junction's
     public int squareSizeCm;
     public int roadWidthCm;

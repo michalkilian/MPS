@@ -13,7 +13,6 @@ import javafx.scene.paint.Color;
 import org.example.logic.Junction;
 import org.example.logic.Lights.Light;
 import org.example.logic.Settings;
-import org.example.logic.Simulation;
 import org.example.logic.cars.Direction;
 import org.example.logic.cars.Type;
 import org.example.logic.cars.Vehicle;
@@ -21,7 +20,6 @@ import org.example.view.JunctionGrid;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
@@ -29,9 +27,7 @@ import java.util.ResourceBundle;
 public class SimulationController extends BaseController implements Initializable {
     public Button backButton;
 
-    public Button magicStartButton;
     public Junction junction;
-    public Simulation simulation;
     public ScrollPane scrollPane;
     public Pane lightsEast;
     public Pane lightsWest;
@@ -44,13 +40,6 @@ public class SimulationController extends BaseController implements Initializabl
     @FXML
     private List<Label> labelList;
 
-
-
-    private void updateGrid(){
-
-
-    }
-
     AnimationTimer h = new AnimationTimer() {
         int i = 1;
 
@@ -61,17 +50,11 @@ public class SimulationController extends BaseController implements Initializabl
                   scrollPane.setContent(junctionGrid.updateColors(junction));
                   setLights();
                   generateCar();
-//                Highway.resetNumbersOfCarOnSegments();
-//                for (Road r : simulation.getHighway().roads) {
-//                    r.generateNextFrame();
-//                }
-//                Lane.iterCounter++;
-//                updateLabelsText();
            }
             i += 1;
         }
     };
-//report - introduction - literature and references, description of the program (structure, maybe diagrams), example of executions + presentations of case studies + conclusions
+
     @Override
     protected void initSettings(Settings settings) {
         this.settings = settings;
@@ -80,7 +63,6 @@ public class SimulationController extends BaseController implements Initializabl
 
     void initSimulation() {
         junction = new Junction(settings);
-        this.simulation = new Simulation(settings);
         this.junctionGrid = new JunctionGrid(junction.getRoadWidth(), junction.getRoadLength());
         this.gridPane = (GridPane) junctionGrid.getFxGrid();
         this.scrollPane.setContent(this.gridPane);
@@ -102,9 +84,6 @@ public class SimulationController extends BaseController implements Initializabl
 
     }
 
-    void initSimulation(Simulation simulation) {
-        this.simulation = simulation;
-    }
     void setLights(){
         Light lightEast = junction.getLightsEast().getState();
         Light lightWest = junction.getLightsWest().getState();
@@ -188,6 +167,7 @@ public class SimulationController extends BaseController implements Initializabl
                 // accessing each element of array
                 if (freeLane) {
                     generateCar = true;
+                    break;
                 }
             }
             if (!generateCar) {
